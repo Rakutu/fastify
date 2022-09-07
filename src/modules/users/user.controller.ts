@@ -11,7 +11,7 @@ async function registerUserHandler(
     try {
         const user = await createUser(body);
 
-        reply.status(201).send(user);
+        reply.code(201).send(user);
     } catch (error) {
         console.error(error);
         // error code just for fast, without validation
