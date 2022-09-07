@@ -1,5 +1,6 @@
 import userRoute from './modules/users/user.route';
 import { fastify as Fastify } from 'fastify';
+import { userSchemas } from './modules/users/user.schema';
 
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -12,6 +13,10 @@ server.get('/healthcheck', async () => {
 })
 
 async function main() {
+    for (const schema of userSchemas) {
+        server.addSchema(schema);
+    }
+
     server.register(userRoute, {
         prefix: 'api/users',
     });

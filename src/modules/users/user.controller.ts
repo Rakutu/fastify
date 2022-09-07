@@ -17,6 +17,6 @@ async function registerUserHandler(
         // error code just for fast, without validation
         reply.send(500);
     }
-};
+}
 
 export default registerUserHandler;
