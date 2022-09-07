@@ -2,7 +2,7 @@ import userRoute from './modules/users/user.route';
 import { fastify as Fastify } from 'fastify';
 
 
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 const server = Fastify();
 
 server.get('/healthcheck', async () => {
@@ -17,11 +17,13 @@ async function main() {
     });
 
     try {
-        await server.listen(PORT, '0.0.0.0');
+        await server.listen({
+            port: PORT,
+        });
 
-        console.log(`Server ready at http://localhost:${PORT}`);
+        console.info(`Server ready at http://localhost:${PORT}`);
     } catch (e) {
-        console.log(e);
+        console.error(e);
         process.exit(1);
     }
 }
