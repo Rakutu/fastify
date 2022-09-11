@@ -1,5 +1,5 @@
-import { CreateProductSchema } from './product.schema';
 import prisma from '../../utils/prisma';
+import { CreateProductSchema } from './product.schema';
 
 
 export async function createProduct(data: CreateProductSchema & { ownerId: number}) {

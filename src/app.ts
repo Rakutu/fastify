@@ -1,6 +1,9 @@
 import userRoute from './modules/users/user.route';
 import { fastify as Fastify, FastifyReply, FastifyRequest } from 'fastify';
 import fjwt from '@fastify/jwt';
+import swagger from '@fastify/swagger';
+import { withRefResolver} from 'fastify-zod';
+import { version } from '../package.json';
 import { userSchemas } from './modules/users/user.schema';
 import { productSchemas } from './modules/product/product.schema';
 import productRoute from './modules/product/product.route';
@@ -11,9 +14,22 @@ const SECRET = process.env.SECRET || 'supersecret';
 
 export const server = Fastify();
 
-server.register(fjwt, {
-    secret: SECRET,
-})
+server.register(fjwt, { secret: SECRET });
+server.register(
+    swagger,
+    withRefResolver({
+        routePrefix: 'api/docs',
+        exposeRoute: true,
+        staticCSP: true,
+        openapi: {
+            info: {
+                title: 'Fastify API',
+                description: 'API docs for my project',
+                version,
+            },
+        }
+    }),
+);
 
 server.decorate(
     'authenticate',
@@ -35,13 +51,8 @@ async function main() {
     for (const schema of [ ...userSchemas, ...productSchemas ]) {
         server.addSchema(schema);
     }
-    server.register(userRoute, {
-        prefix: 'api/users',
-    });
-
-    server.register(productRoute, {
-        prefix: '/api/product'
-    });
+    server.register(userRoute, { prefix: 'api/users' });
+    server.register(productRoute, { prefix: '/api/product' });
 
     try {
         await server.listen({
