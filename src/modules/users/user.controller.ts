@@ -1,8 +1,10 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { CreateUserSchema } from './user.schema';
-import { createUser } from './user.service';
+import { CreateUserSchema, LoginSchema } from './user.schema';
+import { createUser, findUserByEmail } from './user.service';
+import { verifyPassword } from '../../utils/hash';
+import { generateAccessToken } from '../../utils/generateAccessToken';
 
-async function registerUserHandler(
+export async function registerUserHandler(
     request: FastifyRequest<{ Body: CreateUserSchema }>,
     reply: FastifyReply
 ) {
@@ -19,4 +21,35 @@ async function registerUserHandler(
     }
 }
 
-export default registerUserHandler;
+export async function loginHandler(
+    request: FastifyRequest<{ Body: LoginSchema }>,
+    reply: FastifyReply,
+) {
+    const { email, password: loginPassword } = request.body;
+
+    const user = await findUserByEmail(email);
+
+    if (!user) {
+        return reply.code(401).send({
+            message: 'Invalid email or password',
+        });
+    }
+
+    const isCorrectedPassword = verifyPassword({
+        candidatePassword: loginPassword,
+        salt: user.salt,
+        hash: user.password,
+    });
+
+    if (!isCorrectedPassword) {
+        return reply.code(401).send({
+            message: 'Invalid email or password',
+        });
+    }
+
+    const { password, salt, ...rest } = user;
+
+    return {
+        access_token: generateAccessToken(rest),
+    }
+}

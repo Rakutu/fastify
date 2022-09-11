@@ -5,12 +5,12 @@ import { userSchemas } from './modules/users/user.schema';
 
 
 const PORT = Number(process.env.PORT) || 3000;
-const SECRET = process.env.SECRET;
+const SECRET = process.env.SECRET || 'supersecret';
 
-const server = Fastify();
+export const server = Fastify();
 
 server.register(fjwt, {
-    secret: '',
+    secret: SECRET,
 })
 
 server.decorate(
@@ -25,7 +25,7 @@ server.decorate(
 
 server.get('/healthcheck', async () => {
     return {
-        status: SECRET,
+        status: 'ok',
     }
 })
 
