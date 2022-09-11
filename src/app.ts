@@ -2,6 +2,8 @@ import userRoute from './modules/users/user.route';
 import { fastify as Fastify, FastifyReply, FastifyRequest } from 'fastify';
 import fjwt from '@fastify/jwt';
 import { userSchemas } from './modules/users/user.schema';
+import { productSchemas } from './modules/product/product.schema';
+import productRoute from './modules/product/product.route';
 
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -30,12 +32,15 @@ server.get('/healthcheck', async () => {
 })
 
 async function main() {
-    for (const schema of userSchemas) {
+    for (const schema of [ ...userSchemas, ...productSchemas ]) {
         server.addSchema(schema);
     }
-
     server.register(userRoute, {
         prefix: 'api/users',
+    });
+
+    server.register(productRoute, {
+        prefix: '/api/product'
     });
 
     try {

@@ -7,9 +7,9 @@ import { getUsersHandler } from './user.service';
 export async function userRoute(server: FastifyInstance) {
     server.post('/', {
         schema: {
-          body: $ref('createUserSchema'),
-          response: {
-              201: $ref('responseUserSchema'),
+            body: $ref('createUserSchema'),
+            response: {
+                201: $ref('responseUserSchema'),
           },
         },
     }, registerUserHandler);

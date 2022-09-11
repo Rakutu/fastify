@@ -10,8 +10,8 @@ const productInput = {
 
 const productGenerated = {
     id: z.number(),
-    createAt: z.number(),
-    updateAt: z.number(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
 };
 
 const createProductSchema = z.object({
@@ -31,4 +31,6 @@ export const { schemas: productSchemas, $ref } = buildJsonSchemas({
     createProductSchema,
     productResponseSchema,
     productsResponseSchema,
+}, {
+    $id: 'productSchemas',
 });

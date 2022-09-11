@@ -22,8 +22,8 @@ model User {
 
 model Product {
   id Int @id @default(autoincrement())
-  createAt DateTime @default(now())
-  updateAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
   title String @db.VarChar(255)
   content String?
   price Float
