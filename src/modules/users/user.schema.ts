@@ -23,8 +23,8 @@ const createUserSchema = z.object({
 });
 
 const responseUserSchema = z.object({
-    id: z.number(),
     ...userSchemaCore,
+    id: z.number(),
 });
 
 const loginSchema = z.object({
